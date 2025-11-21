@@ -169,9 +169,9 @@ def eval_model(model, loader, criterion, device):
     return total_loss / len(loader), total_acc / len(loader)
 
 def save_checkpoint(state, path):
-    os.makedirs(path, exist_ok=True)
-    filename = os.path.join(path, "checkpoint.pth")
-    torch.save(state, filename)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    torch.save(state, path)
+
 
 ##--------main train---------------
 def main():
@@ -208,22 +208,25 @@ def main():
         )
 
         save_checkpoint(
-            {
+        {
                 "epoch": epoch,
                 "model_state_dict": model.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
-                "loss": val_loss
+                "val_loss": val_loss,
+                "val_acc": val_acc
             },
             os.path.join(Config.ckpt_dir, "last.pth")
         )
 
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            save_checkpoint({
+            save_checkpoint(
+            {
                 "epoch": epoch,
                 "model_state_dict": model.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
-                "loss": val_loss,
+                "val_loss": val_loss,
+                "val_acc": val_acc
             },
             os.path.join(Config.ckpt_dir, "best.pth")
         )
