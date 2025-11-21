@@ -1,0 +1,30 @@
+# ===== Python / venv =====
+.venv/
+venv/
+env/
+ENV/
+*.venv
+
+# ===== PyCharm =====
+.idea/
+*.iml
+
+# ===== Python cache =====
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+
+# ===== Training artifacts =====
+runs/
+checkpoints/
+*.pth
+*.pt
+*.ckpt
+
+# ===== OS files =====
+.DS_Store
+Thumbs.db
