@@ -160,6 +160,9 @@ def main():
     best_val_acc = 0.0
     global_step = 0
 
+    patience = 10
+    epochs_no_improve = 0
+
     for epoch in range(Config.num_epochs):
         train_loss, train_acc, global_step = train_one_epoch(model, train_loader, criterion, optimizer, device, writer, epoch, global_step)
         val_loss, val_acc = eval_model(model, val_loader, criterion, device)
@@ -194,6 +197,8 @@ def main():
         #save best
         if val_acc > best_val_acc:
             best_val_acc = val_acc
+            epochs_no_improve = 0
+
             save_checkpoint(
                 {
                     "epoch": epoch,
@@ -204,15 +209,22 @@ def main():
                 },
                 os.path.join(Config.ckpt_dir, "best.pth")
             )
+            print(f"New best val_acc: {best_val_acc:.4f}, saving best.pth")
+        else:
+            epochs_no_improve += 1
+            print(f"No imporvement for {epochs_no_improve} epochs")
 
+            if epochs_no_improve >= patience:
+                print(f"Early stopping at epoch {epoch+1} with val_acc {val_acc:.4f}")
+                break
         writer.close()
 
-        #test
-        best_ckpt = torch.load(os.path.join(Config.ckpt_dir, "best.pth"), map_location=device)
-        model.load_state_dict(best_ckpt["model_state_dict"])
+    #test
+    best_ckpt = torch.load(os.path.join(Config.ckpt_dir, "best.pth"), map_location=device)
+    model.load_state_dict(best_ckpt["model_state_dict"])
 
-        test_loss, test_acc = eval_model(model, test_loader, criterion, device)
-        print(f"Test loss = {test_loss:.4f} | Test acc = {test_acc:.4f}")
+    test_loss, test_acc = eval_model(model, test_loader, criterion, device)
+    print(f"Test loss = {test_loss:.4f} | Test acc = {test_acc:.4f}")
 
 if __name__ == "__main__":
     main()
