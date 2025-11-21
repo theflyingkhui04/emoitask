@@ -214,5 +214,5 @@ def main():
         test_loss, test_acc = eval_model(model, test_loader, criterion, device)
         print(f"Test loss = {test_loss:.4f} | Test acc = {test_acc:.4f}")
 
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()
