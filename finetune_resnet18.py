@@ -64,7 +64,7 @@ test_loader = DataLoader(test_set, batch_size=Config.batch_size, shuffle=False, 
 ##--------Resnet18--------------
 class ResNet18_finetune(nn.Module):
     def __init__(self, num_classes=10):
-        super(ResNet18, self).__init__()
+        super(ResNet18_finetune, self).__init__()
 
         # Load pretrained ResNet18 model
         self.model = resnet18(weights=weights)
